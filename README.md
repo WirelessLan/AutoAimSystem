@@ -1,4 +1,4 @@
-# TestPlugin
+# AutoAimSystem
 F4SE Plugin for Fallout 4
 
 ## Requirements
@@ -15,8 +15,9 @@ F4SE Plugin for Fallout 4
 ```
 git clone https://github.com/powerof3/CommonLibF4
 cd CommonLibF4
-git clone https://github.com/WirelessLan/TestPlugin
-cd TestPlugin
+git clone https://github.com/WirelessLan/AutoAimSystem
+cd AutoAimSystem
 cmake --preset vs2022-windows-vcpkg
 cmake --build build --config Release
 ```
+
