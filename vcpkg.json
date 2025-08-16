@@ -1,0 +1,12 @@
+{
+  "name": "autoaimsystem",
+  "version-string": "0.0.1",
+  "license": "MIT",
+  "dependencies": [
+    "boost-stl-interfaces",
+    "fmt",
+    "mmio",
+    "spdlog"
+  ],
+  "builtin-baseline": "dd3097e305afa53f7b4312371f62058d2e665320"
+}

@@ -1,0 +1,14 @@
+set(SOURCES
+	src/AimSystems.h
+	src/AimSystems.cpp
+	src/Configs.h
+	src/Configs.cpp
+	src/Events.h
+	src/Events.cpp
+	src/PCH.h
+	src/Scaleforms.h
+	src/Scaleforms.cpp
+	src/Utils.h
+	src/Utils.cpp
+	src/main.cpp
+)
