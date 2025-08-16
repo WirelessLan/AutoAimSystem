@@ -24,6 +24,12 @@ namespace Scaleforms
 			else if (strcmp(a_params.args[0].GetString(), "fMaxDistance") == 0) {
 				Configs::Config.MaxDistance = static_cast<float>(a_params.args[1].GetNumber());
 			}
+			else if (strcmp(a_params.args[0].GetString(), "fMaxNDCRadius") == 0) {
+				Configs::Config.MaxNDCRadius = static_cast<float>(a_params.args[1].GetNumber());
+			}
+			else if (strcmp(a_params.args[0].GetString(), "fDistanceWeightNdc2") == 0) {
+				Configs::Config.DistanceWeightNdc2 = static_cast<float>(a_params.args[1].GetNumber());
+			}
 			else if (strcmp(a_params.args[0].GetString(), "bTargetEnemiesOnly") == 0) {
 				Configs::Config.TargetEnemiesOnly = a_params.args[1].GetBoolean();
 			}

@@ -40,6 +40,28 @@ namespace Configs
 		}
 		logger::info("MaxDistance: {}", Config.MaxDistance);
 
+		value = GetINIValue("AimSystem", "fMaxNDCRadius");
+		if (!value.empty()) {
+			try {
+				Config.MaxNDCRadius = std::stof(value);
+			}
+			catch (...) {
+				logger::error("Invalid MaxNDCRadius value in {}: {}", ConfigPath, value);
+			}
+		}
+		logger::info("MaxNDCRadius: {}", Config.MaxNDCRadius);
+
+		value = GetINIValue("AimSystem", "fDistanceWeightNdc2");
+		if (!value.empty()) {
+			try {
+				Config.DistanceWeightNdc2 = std::stof(value);
+			}
+			catch (...) {
+				logger::error("Invalid DistanceWeightNdc2 value in {}: {}", ConfigPath, value);
+			}
+		}
+		logger::info("DistanceWeightNdc2: {}", Config.DistanceWeightNdc2);
+
 		value = GetINIValue("AimSystem", "bTargetEnemiesOnly");
 		if (!value.empty()) {
 			try {

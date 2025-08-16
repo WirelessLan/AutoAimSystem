@@ -119,23 +119,20 @@ namespace Utils
 		return p;
 	}
 
-	RE::NiAVObject* GetHeadNode(RE::Actor* actor)
+	RE::NiAVObject* GetNode(RE::NiAVObject* node, std::string_view nodeName)
 	{
-		if (!actor || !actor->Get3D()) {
-			return nullptr;
-		}
-
-		auto headNode = actor->Get3D()->GetObjectByName("HEAD");
-		if (!headNode) {
-			return nullptr;
-		}
-
-		return headNode;
+		return node->GetObjectByName(nodeName);
 	}
 
 	bool IsSightedState(const RE::PlayerCharacter* player)
 	{
 		return player->gunState == RE::GUN_STATE::kSighted ||
 		       player->gunState == RE::GUN_STATE::kFireSighted;
+	}
+
+	bool HasLOSToTarget(RE::PlayerCharacter* player, const RE::TESObjectREFR* a_ref, bool& arg3) {
+		using func_t = bool(RE::PlayerCharacter*, const RE::TESObjectREFR*, bool&);
+		REL::Relocation<func_t> func{ REL::ID(449775) };
+		return func(player, a_ref, arg3);
 	}
 }

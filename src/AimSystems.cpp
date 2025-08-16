@@ -9,7 +9,7 @@ namespace AimSystems
 	float LockedScore = std::numeric_limits<float>::infinity();
 
 	inline bool IsLockedTargetValid(RE::PlayerCharacter* player, const Utils::CameraBasis& cam, RE::Actor* target) {
-		if (!target || target->IsDead(true)) {
+		if (!target || target->IsDead(false)) {
 			return false;
 		}
 
@@ -28,18 +28,26 @@ namespace AimSystems
 			return false;
 		}
 
-		return true;
+		bool hasLOS = false;
+		return Utils::HasLOSToTarget(player, target, hasLOS);
 	}
 
 	inline void AimAt(RE::PlayerCharacter* player, const Utils::CameraBasis& cam, RE::Actor* target) {
-		RE::NiPoint3 targetPos;
-
-		auto headNode = Utils::GetHeadNode(target);
-		if (headNode) {
-			targetPos = headNode->world.translate;
+		auto target3D = target->Get3D();
+		if (!target3D) {
+			return;
 		}
-		else {
-			targetPos = target->Get3D()->worldBound.center;
+		
+		RE::NiPoint3 targetPos;
+		auto targetNode = Utils::GetNode(target3D, "HEAD");
+		if (!targetNode) {
+			targetNode = Utils::GetNode(target3D, "SPINE1");
+		}
+
+		if (targetNode) {
+			targetPos = targetNode->world.translate;
+		} else {
+			targetPos = target3D->worldBound.center;
 		}
 
 		RE::NiPoint3 d{
@@ -94,7 +102,7 @@ namespace AimSystems
 
 		for (const auto& actor : processLists->highActorHandles) {
 			auto actorPtr = actor.get();
-			if (!actorPtr || actorPtr->IsPlayerRef() || actorPtr->IsDead(true)) {
+			if (!actorPtr || actorPtr->IsPlayerRef() || actorPtr->IsDead(false)) {
 				continue;
 			}
 
@@ -109,8 +117,9 @@ namespace AimSystems
 
 			const auto center = actor3D->worldBound.center;
 
-			double distance = Utils::SquaredDistance3D(cam.Position, center);
-			if (distance > Configs::Config.MaxDistance * Configs::Config.MaxDistance) {
+			const double maxDist2 = Configs::Config.MaxDistance * Configs::Config.MaxDistance;
+			const double dist2 = Utils::SquaredDistance3D(cam.Position, center);
+			if (dist2 > maxDist2) {
 				continue;
 			}
 
@@ -122,7 +131,22 @@ namespace AimSystems
 			float nx = nx_raw - cam.CenterNdcX;
 			float ny = ny_raw - cam.CenterNdcY;
 
-            const float score = nx * nx + ny * ny;
+			const float maxRadius2 = Configs::Config.MaxNDCRadius * Configs::Config.MaxNDCRadius;
+            const float angScore = nx * nx + ny * ny;
+			if (angScore > maxRadius2) {
+				continue;
+			}
+
+			bool hasLOS = false;
+			if (!Utils::HasLOSToTarget(player, actorPtr.get(), hasLOS)) {
+				continue;
+			}
+
+			const float invMaxDist2 = static_cast<float>((maxDist2 > 0.0) ? (1.0 / maxDist2) : 0.0);
+			const float distNorm = static_cast<float>(dist2) * invMaxDist2;
+
+			// 최종 점수: 각도 우선 + 거리 페널티
+			const float score = angScore + Configs::Config.DistanceWeightNdc2 * distNorm;
 			if (score < bestScore) {
 				bestScore = score;
 				bestActor = actorPtr.get();

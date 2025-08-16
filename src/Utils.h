@@ -20,7 +20,8 @@ namespace Utils
 	float Normalize0ToTwoPi(float a);
 	float ClampPitch(float p);
 
-	RE::NiAVObject* GetHeadNode(RE::Actor* actor);
+	RE::NiAVObject* GetNode(RE::NiAVObject* node, std::string_view nodeName);
 
 	bool IsSightedState(const RE::PlayerCharacter* player);
+	bool HasLOSToTarget(RE::PlayerCharacter* player, const RE::TESObjectREFR* a_ref, bool& arg3);
 }
