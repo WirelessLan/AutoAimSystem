@@ -145,7 +145,7 @@ namespace Utils
 		}
 
 		for (const auto& activeEffect : activeEffectList->data) {
-			if (activeEffect && activeEffect->effect && activeEffect->effect->effectSetting == effect) {
+			if (activeEffect && activeEffect->effect && activeEffect->effect->effectSetting == effect && !(activeEffect->flags & RE::ActiveEffect::Flags::kInactive)) {
 				return true;
 			}
 		}
