@@ -5,7 +5,8 @@
 
 namespace AimSystems
 {
-	RE::Actor* LockedTarget = nullptr;
+	RE::Actor* LockedTarget;
+	RE::EffectSetting* SystemEffect;
 
 	inline bool IsLockedTargetValid(RE::PlayerCharacter* player, const Utils::CameraBasis& cam, RE::Actor* target) {
 		if (!target || target->IsDead(false)) {
@@ -69,10 +70,6 @@ namespace AimSystems
 	}
 
 	void Process() {
-		if (!Configs::Config.Enabled) {
-			return;
-		}
-
 		auto player = RE::PlayerCharacter::GetSingleton();
 		if (!player) {
 			return;
@@ -83,8 +80,7 @@ namespace AimSystems
 			return;
 		}
 
-		auto processLists = RE::ProcessLists::GetSingleton();
-		if (!processLists) {
+		if (!Utils::HasActiveMagicEffect(player, SystemEffect)) {
 			return;
 		}
 
@@ -101,7 +97,12 @@ namespace AimSystems
 		else {
 			LockedTarget = nullptr;
 		}
-		
+
+		auto processLists = RE::ProcessLists::GetSingleton();
+		if (!processLists) {
+			return;
+		}
+
 		float bestScore = std::numeric_limits<float>::infinity();
 		RE::Actor* bestActor = nullptr;
 
@@ -168,5 +169,45 @@ namespace AimSystems
 			LockedTarget = bestActor;
 			AimAt(player, cam, LockedTarget);
 		}
+	}
+
+	void SetSystemEffect() {
+		std::string_view systemEffectFormID = Configs::Config.SystemEffectFormID;
+		if (systemEffectFormID.empty()) {
+			logger::error("SystemEffectFormID not set in config");
+			return;
+		}
+
+		auto delimiter = systemEffectFormID.find('|');
+		if (delimiter == std::string_view::npos) {
+			logger::error("Invalid SystemEffect FormID format: {}", systemEffectFormID);
+			return;
+		}
+
+		std::string_view pluginName = systemEffectFormID.substr(0, delimiter);
+		std::string_view formIDStr = systemEffectFormID.substr(delimiter + 1);
+
+		std::uint32_t formID;
+		try {
+			formID = std::stoul(std::string(formIDStr), nullptr, 16) & 0xFFFFFF;
+		}
+		catch (...) {
+			logger::error("Invalid SystemEffect FormID: {}", formIDStr);
+			return;
+		}
+
+		RE::TESForm* form = Utils::GetFormFromIdentifier(pluginName, formID);
+		if (!form) {
+			logger::error("Form not found: {}|{}", pluginName, formIDStr);
+			return;
+		}
+
+		RE::EffectSetting* effectSetting = form->As<RE::EffectSetting>();
+		if (!effectSetting) {
+			logger::error("Form is not a MagicEffect: {}|{}", pluginName, formIDStr);
+			return;
+		}
+
+		SystemEffect = effectSetting;
 	}
 }

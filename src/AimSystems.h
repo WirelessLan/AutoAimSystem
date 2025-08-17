@@ -3,4 +3,5 @@
 namespace AimSystems
 {
 	void Process();
+	void SetSystemEffect();
 }

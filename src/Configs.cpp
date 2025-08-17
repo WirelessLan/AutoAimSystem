@@ -18,16 +18,11 @@ namespace Configs
 	void Initialize() {
 		std::string value;
 
-		value = GetINIValue("AimSystem", "bEnabled");
+		value = GetINIValue("AimSystem", "sSystemEffectFormID");
 		if (!value.empty()) {
-			try {
-				Config.Enabled = std::stoi(value) != 0;
-			}
-			catch (...) {
-				logger::error("Invalid Enabled value in {}: {}", ConfigPath, value);
-			}
+			Config.SystemEffectFormID = value;
 		}
-		logger::info("Enabled: {}", Config.Enabled);
+		logger::info("SystemEffectFormID: {}", Config.SystemEffectFormID);
 
 		value = GetINIValue("AimSystem", "fMaxDistance");
 		if (!value.empty()) {

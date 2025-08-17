@@ -7,6 +7,7 @@ void OnF4SEMessage(F4SE::MessagingInterface::Message* msg) {
 	switch (msg->type) {
 	case F4SE::MessagingInterface::kGameDataReady:
 		Events::Install();
+		AimSystems::SetSystemEffect();
 		break;
 	}
 }

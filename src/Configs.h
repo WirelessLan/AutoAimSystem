@@ -4,9 +4,9 @@ namespace Configs
 {
 	struct ConfigData
 	{
-		bool Enabled = true;
+		std::string SystemEffectFormID;
 		double MaxDistance = 5000.0;
-		float MaxNDCRadius = 0.5f;
+		float MaxNDCRadius = 0.25f;
 		float DistanceWeightNdc2 = 0.5f;
 		bool TargetEnemiesOnly = true;
 	};

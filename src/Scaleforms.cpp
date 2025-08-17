@@ -18,10 +18,7 @@ namespace Scaleforms
 				return;
 			}
 
-			if (strcmp(a_params.args[0].GetString(), "bEnabled") == 0) {
-				Configs::Config.Enabled = a_params.args[1].GetBoolean();
-			}
-			else if (strcmp(a_params.args[0].GetString(), "fMaxDistance") == 0) {
+			if (strcmp(a_params.args[0].GetString(), "fMaxDistance") == 0) {
 				Configs::Config.MaxDistance = static_cast<float>(a_params.args[1].GetNumber());
 			}
 			else if (strcmp(a_params.args[0].GetString(), "fMaxNDCRadius") == 0) {

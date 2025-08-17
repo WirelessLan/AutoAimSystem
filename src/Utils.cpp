@@ -75,7 +75,6 @@ namespace Utils
 		return true;
 	}
 
-
     bool WorldToNDCCentered(const CameraBasis& c, const RE::NiPoint3& P, float& ndcX, float& ndcY)
 	{
 		if (!WorldToNDC_NoOffset(c, P, ndcX, ndcY)) {
@@ -126,13 +125,40 @@ namespace Utils
 
 	bool IsSightedState(const RE::PlayerCharacter* player)
 	{
-		return player->gunState == RE::GUN_STATE::kSighted ||
-		       player->gunState == RE::GUN_STATE::kFireSighted;
+		return player->gunState == RE::GUN_STATE::kSighted || player->gunState == RE::GUN_STATE::kFireSighted;
 	}
 
 	bool HasLOSToTarget(RE::PlayerCharacter* player, const RE::TESObjectREFR* a_ref, bool& arg3) {
 		using func_t = bool(RE::PlayerCharacter*, const RE::TESObjectREFR*, bool&);
 		REL::Relocation<func_t> func{ REL::ID(449775) };
 		return func(player, a_ref, arg3);
+	}
+
+	bool HasActiveMagicEffect(RE::Actor* actor, RE::EffectSetting* effect) {
+		if (!actor || !effect) {
+			return false;
+		}
+
+		auto activeEffectList = actor->GetActiveEffectList();
+		if (!activeEffectList) {
+			return false;
+		}
+
+		for (const auto& activeEffect : activeEffectList->data) {
+			if (activeEffect && activeEffect->effect && activeEffect->effect->effectSetting == effect) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	RE::TESForm* GetFormFromIdentifier(std::string_view a_pluginName, std::uint32_t a_formID) {
+		RE::TESDataHandler* g_dataHandler = RE::TESDataHandler::GetSingleton();
+		if (!g_dataHandler) {
+			return nullptr;
+		}
+
+		return g_dataHandler->LookupForm(a_formID, a_pluginName);
 	}
 }
