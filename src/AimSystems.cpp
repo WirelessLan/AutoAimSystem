@@ -5,8 +5,8 @@
 
 namespace AimSystems
 {
-	RE::Actor* LockedTarget;
-	RE::EffectSetting* SystemEffect;
+	bool Enabled = false;
+	RE::Actor* LockedTarget = nullptr;
 
 	inline bool IsLockedTargetValid(RE::PlayerCharacter* player, const Utils::CameraBasis& cam, RE::Actor* target) {
 		if (!target || target->IsDead(false)) {
@@ -70,6 +70,10 @@ namespace AimSystems
 	}
 
 	void Process() {
+		if (!Enabled) {
+			return;
+		}
+
 		auto player = RE::PlayerCharacter::GetSingleton();
 		if (!player) {
 			return;
@@ -77,10 +81,6 @@ namespace AimSystems
 
 		if (!Utils::IsSightedState(player)) {
 			LockedTarget = nullptr;
-			return;
-		}
-
-		if (!Utils::HasActiveMagicEffect(player, SystemEffect)) {
 			return;
 		}
 
@@ -171,43 +171,22 @@ namespace AimSystems
 		}
 	}
 
-	void SetSystemEffect() {
-		std::string_view systemEffectFormID = Configs::Config.SystemEffectFormID;
-		if (systemEffectFormID.empty()) {
-			logger::error("SystemEffectFormID not set in config");
-			return;
-		}
+	void ToggleEnabled() {
+		SetEnabled(!Enabled);
+	}
 
-		auto delimiter = systemEffectFormID.find('|');
-		if (delimiter == std::string_view::npos) {
-			logger::error("Invalid SystemEffect FormID format: {}", systemEffectFormID);
-			return;
+	void SetEnabled(bool enabled) {
+		if (!enabled) {
+			LockedTarget = nullptr;
 		}
+		Enabled = enabled;
+	}
 
-		std::string_view pluginName = systemEffectFormID.substr(0, delimiter);
-		std::string_view formIDStr = systemEffectFormID.substr(delimiter + 1);
+	bool IsEnabled() {
+		return Enabled;
+	}
 
-		std::uint32_t formID;
-		try {
-			formID = std::stoul(std::string(formIDStr), nullptr, 16) & 0xFFFFFF;
-		}
-		catch (...) {
-			logger::error("Invalid SystemEffect FormID: {}", formIDStr);
-			return;
-		}
-
-		RE::TESForm* form = Utils::GetFormFromIdentifier(pluginName, formID);
-		if (!form) {
-			logger::error("Form not found: {}|{}", pluginName, formIDStr);
-			return;
-		}
-
-		RE::EffectSetting* effectSetting = form->As<RE::EffectSetting>();
-		if (!effectSetting) {
-			logger::error("Form is not a MagicEffect: {}|{}", pluginName, formIDStr);
-			return;
-		}
-
-		SystemEffect = effectSetting;
+	bool IsTargetLocked() {
+		return LockedTarget != nullptr;
 	}
 }

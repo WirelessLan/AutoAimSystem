@@ -2,18 +2,27 @@
 #include "Configs.h"
 #include "Events.h"
 #include "Scaleforms.h"
+#include "Scripts.h"
 
 void OnF4SEMessage(F4SE::MessagingInterface::Message* msg) {
 	switch (msg->type) {
 	case F4SE::MessagingInterface::kGameDataReady:
 		Events::Install();
-		AimSystems::SetSystemEffect();
+		break;
+
+	case F4SE::MessagingInterface::kPreLoadGame:
+	case F4SE::MessagingInterface::kNewGame:
+		AimSystems::SetEnabled(false);
 		break;
 	}
 }
 
-bool RegisterScaleforms(RE::Scaleform::GFx::Movie* a_view, RE::Scaleform::GFx::Value* a_value)
-{
+bool RegisterSripts(RE::BSScript::IVirtualMachine* a_vm) {	
+	Scripts::Register(a_vm);
+	return true;
+}
+
+bool RegisterScaleforms(RE::Scaleform::GFx::Movie* a_view, RE::Scaleform::GFx::Value* a_value) {
 	Scaleforms::Register(a_view, a_value);
 	return true;
 }
@@ -71,6 +80,11 @@ extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Load(const F4SE::LoadInterface * a_
 	const F4SE::MessagingInterface* message = F4SE::GetMessagingInterface();
 	if (message) {
 		message->RegisterListener(OnF4SEMessage);
+	}
+
+	const F4SE::PapyrusInterface* papyrus = F4SE::GetPapyrusInterface();
+	if (papyrus) {
+		papyrus->Register(RegisterSripts);
 	}
 
 	const F4SE::ScaleformInterface* scaleform = F4SE::GetScaleformInterface();

@@ -3,5 +3,8 @@
 namespace AimSystems
 {
 	void Process();
-	void SetSystemEffect();
+	void ToggleEnabled();
+	void SetEnabled(bool enabled);
+	bool IsEnabled();
+	bool IsTargetLocked();
 }

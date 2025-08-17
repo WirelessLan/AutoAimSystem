@@ -8,6 +8,8 @@ set(SOURCES
 	src/PCH.h
 	src/Scaleforms.h
 	src/Scaleforms.cpp
+	src/Scripts.h
+	src/Scripts.cpp
 	src/Utils.h
 	src/Utils.cpp
 	src/main.cpp

@@ -18,12 +18,6 @@ namespace Configs
 	void Initialize() {
 		std::string value;
 
-		value = GetINIValue("AimSystem", "sSystemEffectFormID");
-		if (!value.empty()) {
-			Config.SystemEffectFormID = value;
-		}
-		logger::info("SystemEffectFormID: {}", Config.SystemEffectFormID);
-
 		value = GetINIValue("AimSystem", "fMaxDistance");
 		if (!value.empty()) {
 			try {
