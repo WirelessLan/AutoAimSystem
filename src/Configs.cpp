@@ -61,5 +61,16 @@ namespace Configs
 			}
 		}
 		logger::info("TargetEnemiesOnly: {}", Config.TargetEnemiesOnly);
+
+		value = GetINIValue("AimSystem", "bRequireLOS");
+		if (!value.empty()) {
+			try {
+				Config.RequireLOS = std::stoi(value) != 0;
+			}
+			catch (...) {
+				logger::error("Invalid RequireLOS value in {}: {}", ConfigPath, value);
+			}
+		}
+		logger::info("RequireLOS: {}", Config.RequireLOS);
 	}
 }

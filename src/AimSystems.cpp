@@ -30,12 +30,26 @@ namespace AimSystems
 		}
 
 		bool dummy;
-		return Utils::HasLOSToTarget(player, target, dummy);
+		return Configs::Config.RequireLOS ? Utils::HasLOSToTarget(player, target, dummy) : true;
 	}
 
 	inline RE::NiPoint3 GetAimPoint(RE::NiAVObject* target3D)
 	{
-		RE::NiAVObject* targetNode = Utils::GetNode(target3D, "HEAD");
+		static constexpr const char* HeadNodes[] = {
+			"HEAD",
+			"LHead",
+			"RHead",
+			"Dogmeat_Head"
+		};
+
+		RE::NiAVObject* targetNode = nullptr;
+		for (const auto& nodeName : HeadNodes) {
+			targetNode = Utils::GetNode(target3D, nodeName);
+			if (targetNode) {
+				break;
+			}
+		}
+
 		if (!targetNode) {
 			targetNode = Utils::GetNode(target3D, "SPINE1");
 			if (!targetNode) {
@@ -149,7 +163,7 @@ namespace AimSystems
 			}
 
 			bool dummy;
-			if (!Utils::HasLOSToTarget(player, actorPtr, dummy)) {
+			if (Configs::Config.RequireLOS && !Utils::HasLOSToTarget(player, actorPtr, dummy)) {
 				continue;
 			}
 

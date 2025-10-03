@@ -30,6 +30,9 @@ namespace Scaleforms
 			else if (strcmp(a_params.args[0].GetString(), "bTargetEnemiesOnly") == 0) {
 				Configs::Config.TargetEnemiesOnly = a_params.args[1].GetBoolean();
 			}
+			else if (strcmp(a_params.args[0].GetString(), "bRequireLOS") == 0) {
+				Configs::Config.RequireLOS = a_params.args[1].GetBoolean();
+			}
 		}
 	};
 
