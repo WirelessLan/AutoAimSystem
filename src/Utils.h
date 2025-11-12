@@ -23,7 +23,7 @@ namespace Utils
 	RE::NiAVObject* GetNode(RE::NiAVObject* node, std::string_view nodeName);
 
 	bool IsSightedState(const RE::PlayerCharacter* player);
-	bool HasLOSToTarget(RE::PlayerCharacter* player, const RE::TESObjectREFR* a_ref, bool& arg3);
+	bool HasLOSToTarget(RE::PlayerCharacter* player, const RE::TESObjectREFR* a_ref);
 	bool HasActiveMagicEffect(RE::Actor* actor, RE::EffectSetting* effect);
 
 	RE::TESForm* GetFormFromIdentifier(std::string_view a_pluginName, std::uint32_t a_formID);

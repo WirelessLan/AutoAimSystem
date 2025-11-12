@@ -128,10 +128,12 @@ namespace Utils
 		return player->gunState == RE::GUN_STATE::kSighted || player->gunState == RE::GUN_STATE::kFireSighted;
 	}
 
-	bool HasLOSToTarget(RE::PlayerCharacter* player, const RE::TESObjectREFR* a_ref, bool& arg3) {
+	bool HasLOSToTarget(RE::PlayerCharacter* player, const RE::TESObjectREFR* a_ref)
+	{
+		bool dummy;
 		using func_t = bool(RE::PlayerCharacter*, const RE::TESObjectREFR*, bool&);
 		REL::Relocation<func_t> func{ REL::ID(449775) };
-		return func(player, a_ref, arg3);
+		return func(player, a_ref, dummy);
 	}
 
 	bool HasActiveMagicEffect(RE::Actor* actor, RE::EffectSetting* effect) {

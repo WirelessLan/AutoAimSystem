@@ -72,5 +72,71 @@ namespace Configs
 			}
 		}
 		logger::info("RequireLOS: {}", Config.RequireLOS);
+
+		value = GetINIValue("AimSystem", "bUseAimPredictor");
+		if (!value.empty()) {
+			try {
+				Config.UseAimPredictor = std::stoi(value) != 0;
+			}
+			catch (...) {
+				logger::error("Invalid UseAimPredictor value in {}: {}", ConfigPath, value);
+			}
+		}
+		logger::info("UseAimPredictor: {}", Config.UseAimPredictor);
+
+		value = GetINIValue("AimSystem", "fAimPredictorR0");
+		if (!value.empty()) {
+			try {
+				Config.AimPredictorR0 = std::stod(value);
+			}
+			catch (...) {
+				logger::error("Invalid AimPredictorR0 value in {}: {}", ConfigPath, value);
+			}
+		}
+		logger::info("AimPredictorR0: {}", Config.AimPredictorR0);
+
+		value = GetINIValue("AimSystem", "fAimPredictorAlphaLo");
+		if (!value.empty()) {
+			try {
+				Config.AimPredictorAlphaLo = std::stod(value);
+			}
+			catch (...) {
+				logger::error("Invalid AimPredictorAlphaLo value in {}: {}", ConfigPath, value);
+			}
+		}
+		logger::info("AimPredictorAlphaLo: {}", Config.AimPredictorAlphaLo);
+
+		value = GetINIValue("AimSystem", "fAimPredictorAlphaHi");
+		if (!value.empty()) {
+			try {
+				Config.AimPredictorAlphaHi = std::stod(value);
+			}
+			catch (...) {
+				logger::error("Invalid AimPredictorAlphaHi value in {}: {}", ConfigPath, value);
+			}
+		}
+		logger::info("AimPredictorAlphaHi: {}", Config.AimPredictorAlphaHi);
+
+		value = GetINIValue("AimSystem", "fAimPredictorBetaLo");
+		if (!value.empty()) {
+			try {
+				Config.AimPredictorBetaLo = std::stod(value);
+			}
+			catch (...) {
+				logger::error("Invalid AimPredictorBetaLo value in {}: {}", ConfigPath, value);
+			}
+		}
+		logger::info("AimPredictorBetaLo: {}", Config.AimPredictorBetaLo);
+
+		value = GetINIValue("AimSystem", "fAimPredictorBetaHi");
+		if (!value.empty()) {
+			try {
+				Config.AimPredictorBetaHi = std::stod(value);
+			}
+			catch (...) {
+				logger::error("Invalid AimPredictorBetaHi value in {}: {}", ConfigPath, value);
+			}
+		}
+		logger::info("AimPredictorBetaHi: {}", Config.AimPredictorBetaHi);
 	}
 }

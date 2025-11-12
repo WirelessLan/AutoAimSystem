@@ -1,5 +1,7 @@
 #include "Scaleforms.h"
+
 #include "Configs.h"
+#include "AimSystems.h"
 
 namespace Scaleforms
 {
@@ -18,6 +20,8 @@ namespace Scaleforms
 				return;
 			}
 
+			bool updatePredictor = false;
+
 			if (strcmp(a_params.args[0].GetString(), "fMaxDistance") == 0) {
 				Configs::Config.MaxDistance = static_cast<float>(a_params.args[1].GetNumber());
 			}
@@ -32,6 +36,37 @@ namespace Scaleforms
 			}
 			else if (strcmp(a_params.args[0].GetString(), "bRequireLOS") == 0) {
 				Configs::Config.RequireLOS = a_params.args[1].GetBoolean();
+			}
+			else if (strcmp(a_params.args[0].GetString(), "bUseAimPredictor") == 0) {
+				Configs::Config.UseAimPredictor = a_params.args[1].GetBoolean();
+			}
+			else if (strcmp(a_params.args[0].GetString(), "fAimPredictorR0") == 0) {
+				updatePredictor = true;
+				Configs::Config.AimPredictorR0 = static_cast<float>(a_params.args[1].GetNumber());
+			}
+			else if (strcmp(a_params.args[0].GetString(), "fAimPredictorAlphaLo") == 0) {
+				updatePredictor = true;
+				Configs::Config.AimPredictorAlphaLo = static_cast<float>(a_params.args[1].GetNumber());
+			}
+			else if (strcmp(a_params.args[0].GetString(), "fAimPredictorAlphaHi") == 0) {
+				updatePredictor = true;
+				Configs::Config.AimPredictorAlphaHi = static_cast<float>(a_params.args[1].GetNumber());
+			}
+			else if (strcmp(a_params.args[0].GetString(), "fAimPredictorBetaLo") == 0) {
+				updatePredictor = true;
+				Configs::Config.AimPredictorBetaLo = static_cast<float>(a_params.args[1].GetNumber());
+			}
+			else if (strcmp(a_params.args[0].GetString(), "fAimPredictorBetaHi") == 0) {
+				updatePredictor = true;
+				Configs::Config.AimPredictorBetaHi = static_cast<float>(a_params.args[1].GetNumber());
+			}
+
+			if (updatePredictor) {
+				AimSystems::Predictor.Configure(Configs::Config.AimPredictorR0,
+					Configs::Config.AimPredictorAlphaLo,
+					Configs::Config.AimPredictorAlphaHi,
+					Configs::Config.AimPredictorBetaLo,
+					Configs::Config.AimPredictorBetaHi);
 			}
 		}
 	};

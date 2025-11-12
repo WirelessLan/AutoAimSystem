@@ -7,6 +7,12 @@
 void OnF4SEMessage(F4SE::MessagingInterface::Message* msg) {
 	switch (msg->type) {
 	case F4SE::MessagingInterface::kGameDataReady:
+		AimSystems::Predictor.Configure(
+			Configs::Config.AimPredictorR0,
+			Configs::Config.AimPredictorAlphaLo,
+			Configs::Config.AimPredictorAlphaHi,
+			Configs::Config.AimPredictorBetaLo,
+			Configs::Config.AimPredictorBetaHi);
 		Events::Install();
 		break;
 

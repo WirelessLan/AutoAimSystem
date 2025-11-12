@@ -1,12 +1,12 @@
 #include "AimSystems.h"
 
-#include "Configs.h"
 #include "Utils.h"
 
 namespace AimSystems
 {
 	bool Enabled = false;
 	RE::Actor* LockedTarget = nullptr;
+	AimPredictor Predictor;
 
 	inline bool IsLockedTargetValid(RE::PlayerCharacter* player, const Utils::CameraBasis& cam, RE::Actor* target) {
 		if (!target || target->IsDead(false)) {
@@ -29,8 +29,7 @@ namespace AimSystems
 			return false;
 		}
 
-		bool dummy;
-		return Configs::Config.RequireLOS ? Utils::HasLOSToTarget(player, target, dummy) : true;
+		return Configs::Config.RequireLOS ? Utils::HasLOSToTarget(player, target) : true;
 	}
 
 	inline RE::NiPoint3 GetAimPoint(RE::NiAVObject* target3D)
@@ -67,17 +66,12 @@ namespace AimSystems
 		}
 
 		const auto targetPos = GetAimPoint(target3D);
+		const auto aimPos = (Configs::Config.UseAimPredictor ? Predictor.Update(targetPos) : targetPos) - cam.Position;
 
-		RE::NiPoint3 d{
-			targetPos.x - cam.Position.x,
-			targetPos.y - cam.Position.y,
-			targetPos.z - cam.Position.z
-		};
+		const float horiz = std::hypot(aimPos.x, aimPos.y);
 
-		const float horiz = std::hypot(d.x, d.y);
-
-		float pitch = Utils::ClampPitch(-std::atan2(d.z, horiz));
-		float yaw = Utils::Normalize0ToTwoPi(std::atan2(d.x, d.y));
+		float pitch = Utils::ClampPitch(-std::atan2(aimPos.z, horiz));
+		float yaw = Utils::Normalize0ToTwoPi(std::atan2(aimPos.x, aimPos.y));
 
 		player->data.angle.x = pitch;
 		player->data.angle.z = yaw;
@@ -95,6 +89,7 @@ namespace AimSystems
 
 		if (!Utils::IsSightedState(player)) {
 			LockedTarget = nullptr;
+			Predictor.Clear();
 			return;
 		}
 
@@ -110,6 +105,7 @@ namespace AimSystems
 		}
 		else {
 			LockedTarget = nullptr;
+			Predictor.Clear();
 		}
 
 		auto processLists = RE::ProcessLists::GetSingleton();
@@ -162,8 +158,7 @@ namespace AimSystems
 				continue;
 			}
 
-			bool dummy;
-			if (Configs::Config.RequireLOS && !Utils::HasLOSToTarget(player, actorPtr, dummy)) {
+			if (Configs::Config.RequireLOS && !Utils::HasLOSToTarget(player, actorPtr)) {
 				continue;
 			}
 
